@@ -20,6 +20,9 @@ Love the project? Please consider donating to help it improve!
 
 Give india logo
 
+![image](https://user-images.githubusercontent.com/105142693/185402046-16c19ace-0f78-4f12-9cef-5e97017ec0f1.png)
+
+
 Are you considering supporting the project by donating? Please DON'T!!
 
 Instead, Help India fight the 2nd deadly wave of COVID-19.
@@ -34,6 +37,9 @@ GitHub Extra Pins
 Top Languages Card
 Wakatime Week Stats
 Themes
+
+![image](https://user-images.githubusercontent.com/105142693/185402429-4c6dcdda-af27-4e07-b961-1fcecd345814.png)
+
 Customization
 Common Options
 Stats Card Exclusive Options
