@@ -1,7 +1,8 @@
 # task-management-application
 
 
-![image](https://user-images.githubusercontent.com/105142693/185401075-bc1fb0b3-6d26-4f36-82ec-63128e355923.png)
+![image](https://user-images.githubusercontent.com/105142693/185401692-6d6d1f5e-3b2f-4152-96e6-9ccacc8c4cce.png)
+
 
 
 GitHub Readme Stats
