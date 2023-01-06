@@ -98,21 +98,45 @@ const state = {               /* state means that all the task from the list */
       description: document.getElementById("taskDescription").value,
       type: document.getElementById("tags").value,
     };
-  
-    if (input.title === "" || input.description === "" || input.type === "") {
-      return alert("Please fill all the fields");
+    const urls = [
+      'https://avatars.githubusercontent.com/u/33640448?v=4',
+      'https://httpbin.org/image/webp',
+      'https://upload.wikimedia.org/wikipedia/commons/a/a3/June_odd-eyed-cat.jpg'
+    ];
+    function isImgUrl(url) {
+      const img = new Image();
+      img.src = url;
+      return new Promise((resolve) => {
+        img.onerror = () => resolve(false);
+        img.onload = () => resolve(true);
+      });
     }
+    
+    
+    
+    // Promise.all(urls.map((url) => isImgUrl(url))).then()
+    
+    isImgUrl(input.url).then((res) => {
+      if (!res) {
+        if (input.title === "" || input.description === "" || input.type === "") {
+          return alert("Please fill all the fields");
+        return;
+
+        }else{
+          input.url = 'https://reactnativecode.com/wp-content/uploads/2018/02/Default_Image_Thumbnail.png';
+          state.taskList.push({ id, ...input });
+          updateLocalStorage();
+          taskContents.insertAdjacentHTML("beforeend", htmlTaskContent({ id, ...input }));
+          event.target.reset();
+          
+
+        }
+      }
+    });
+
   
-    taskContents.insertAdjacentHTML(
-      "beforeend",
-      htmlTaskContent({
-        ...input,
-        id,
-      })
-    );
+    
   
-    state.taskList.push({ ...input, id });
-    updateLocalStorage(); /* add new eliment this time use push function */
   };
   
   const openTask = (e) => {
