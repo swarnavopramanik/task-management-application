@@ -98,6 +98,22 @@ const state = {               /* state means that all the task from the list */
       description: document.getElementById("taskDescription").value,
       type: document.getElementById("tags").value,
     };
+    function isImgUrl(url) {
+      const img = new Image();
+      img.src = url;
+      return new Promise((resolve) => {
+        img.onerror = () => resolve(false);
+        img.onload = () => resolve(true);
+      });
+    }
+    
+    const urls = [
+      'https://avatars.githubusercontent.com/u/33640448?v=4',
+      'https://httpbin.org/image/webp',
+      'https://upload.wikimedia.org/wikipedia/commons/a/a3/June_odd-eyed-cat.jpg'
+    ];
+    
+    Promise.all(urls.map((url) => isImgUrl(url))).then(console.log);
   
     if (input.title === "" || input.description === "" || input.type === "") {
       return alert("Please fill all the fields");
