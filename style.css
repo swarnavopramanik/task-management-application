@@ -16,6 +16,18 @@
     z-index: 3; /* The z-index property specifies the stack order of an element. An element with greater stack order is always in front of an element with a lower stack order. */
     width: 100%;
   }
+  footer {
+    background-color: #333333;
+    color: #ffffff;
+    padding: 20px;
+    text-align: center;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+  }
+  
+  
   
   /* @media (min-width: 768px) {
     .add__new__btn__mobile__only {
