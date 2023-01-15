@@ -19,13 +19,14 @@
   footer {
     background-color: #333333;
     color: #ffffff;
-    padding: 20px;
+    padding:0.5rem;
     text-align: center;
     position: fixed;
     left: 0;
     bottom: 0;
     width: 100%;
   }
+  
   
   
   
