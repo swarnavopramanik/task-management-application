@@ -7,7 +7,7 @@ import { LogoLight30 } from '../assets/taskylogos'
 export default function DashboardNav() {
   return (
     <div>
-      <nav className="bg-gray-800 flex items-center justify-between w-full px-4 py-2 ">
+      <nav className="bg-gray-800 flex items-center justify-between w-full px-4 py-2 max-h-11">
 
         <div className="flex items-center flex-shrink-0 text-white mr-6">
           <a href='/' className="font-semibold text-xl tracking-tight w-24"><LogoLight30 /></a>

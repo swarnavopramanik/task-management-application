@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink,Link } from 'react-router-dom'
 
 import { HiMenu, } from "react-icons/hi"
 import { LogoLight30 } from '../assets/taskylogos'
@@ -10,7 +10,7 @@ export default function LandingPageNav() {
         <nav className="bg-transparent flex items-center justify-between w-full p-4 sm:p-0 sm:w-9/12 mx-auto h-28">
 
             <div className="flex items-center flex-shrink-0 text-white mr-6">
-                <a href='/' className="font-semibold text-xl tracking-tight w-24"><LogoLight30 /></a>
+                <Link to='/' className="font-semibold text-xl tracking-tight w-24"><LogoLight30 /></Link>
             </div>
 
             <div className="hidden md:flex ">
