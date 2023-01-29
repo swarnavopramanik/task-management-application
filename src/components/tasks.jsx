@@ -20,9 +20,10 @@ export default function Tasks() {
   const [taskList, setTaskList] = useState(() => (localStorage.tasklist ? JSON.parse(localStorage.tasklist) : []));
 
   // to track data when the sate changes.
-  useEffect(() => {
-    console.log("states changed: ", formstate, taskList);
-  }, [formstate, taskList]);
+  // useEffect(() => {
+  //   console.log("states changed: ", formstate, taskList);
+  // }, [formstate, taskList]);
+
 
   function isImgUrl(url) {
     const img = new Image();
@@ -46,8 +47,8 @@ export default function Tasks() {
     newList.push({ taskId, ...values })
     setTaskList(newList);
     updateLocalStorage(newList);
-    console.log("new tasklist", taskList);
-    console.log("localStorage: ", JSON.parse(localStorage.tasklist))
+    // console.log("new tasklist", taskList);
+    // console.log("localStorage: ", JSON.parse(localStorage.tasklist))
   }
 
   function updateLocalStorage(list) {
@@ -58,8 +59,8 @@ export default function Tasks() {
     let newList = taskList.filter(task => (String(task.taskId) !== taskId));
     setTaskList(newList);
     updateLocalStorage(newList);
-    console.log("new tasklist", taskList);
-    console.log("localStorage: ", JSON.parse(localStorage.tasklist))
+    // console.log("new tasklist", taskList);
+    // console.log("localStorage: ", JSON.parse(localStorage.tasklist))
   }
 
   // both editTask and handleEditTask used for edit task.
@@ -195,10 +196,10 @@ export function TaskCard(task) {
   )
 }
 
-function CardIcon({ name, clickhandler = null, tooltip = "tooltip", styles = "" }) {
+function CardIcon({ name, clickhandler = null, tooltip = "tooltip", styles=null }) {
   return (
     <button
-      type="button" className={"group relative inline-block rounded-lg p-1 hover:bg-slate-100 text-slate-600 text-xl " + styles}
+      type="button" className={"group relative inline-block rounded-lg p-1 text-slate-600 text-xl  " + styles}
       onClick={clickhandler} >
       {name}
       <div className={"opacity-0 bg-slate-100 text-slate-800 text-sm rounded-lg absolute z-10 group-hover:opacity-100 px-2 py-1 mt-2 "}>
