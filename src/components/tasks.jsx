@@ -93,21 +93,22 @@ export default function Tasks() {
 
   return (
     <>
-      <div className="flex justify-between items-center px-2 bg-slate-800 border-b border-slate-500">
-        <h2 className=" p-2 text-xl font-mono text-black">Tasks</h2>
-        <div className="flex">
-          {/* avatar for profile. */}
-        </div>
+      <div className="flex justify-between items-center px-2 bg-slate-800 border-b border-slate-500 rounded-t-lg ">
+        <h2 className="py-2 text-xl font-mono text-white">Tasks</h2>
       </div>
 
-      <div className="flex justify-between items-center p-1 bg-slate-300 rounded-t-lg">
+      <div className="flex justify-between items-center bg-gray-300 px-2 py-1">
         <div className='flex'>
-        <button className=" px-2  font-mono text-slate-800">table</button>
-        <button className=" px-2  font-mono text-slate-800">card</button>
+          <button className=" mr-1 bg-slate-500 inline-flex items-center px-2 py-1 rounded hover:bg-slate-600 hover:duration-500 hover:text-white" onClick={() => (setformstate({ ...formstate, state: "new" }))} >
+            <HiPlus />
+            <span className="mx-1 text-sm">Add</span>
+          </button>
+          <button className="mr-1 bg-slate-500 px-2 py-1 rounded hover:bg-slate-600 hover:duration-500 hover:text-white">table</button>
+          <button className="mr-1 bg-slate-500 px-2 py-1 rounded hover:bg-slate-600 hover:duration-500 hover:text-white">card</button>
         </div>
         <div className="flex">
           <TaskSearch changehandler={handleTaskSearch} />
-          <button className=" ml-2 bg-slate-500 inline-flex items-center px-2 py-1 rounded hover:bg-slate-600 hover:duration-500 hover:text-white" onClick={() => (setformstate({ ...formstate, state: "new" }))} > <HiPlus /> <span className="mx-1 text-sm">Add</span></button>
+
         </div>
       </div>
 
@@ -123,7 +124,6 @@ export default function Tasks() {
               title="Create new task"
               submitbtn="Create"
               closeForm={closeForm} />
-
           </div>) : null}
 
         {formstate.state === "edit" ?
@@ -137,8 +137,8 @@ export default function Tasks() {
               closeForm={closeForm} />
           </div>) : null}
 
-        {/*  */}
-        <div className=" flex flex-col items-center sm:items-start sm:grid sm:grid-cols-2 lg:grid-cols-3  gap-x-2 gap-y-4 p-2 ">
+
+        <div className=" flex flex-col items-center sm:grid sm:grid-cols-2 lg:grid-cols-4 lg:items-start gap-x-2 gap-y-4 p-2 ">
           {/* tasks goes here */}
           {taskList.map(task => (<TaskCard
             key={task.taskId}
@@ -194,15 +194,15 @@ export function TaskCard(task) {
           <p className=' inline text-slate-500  bg-slate-200 px-3 rounded-lg '>{task.type ? task.type : "type"}</p>
         </div>
 
-        <p className="text-gray-700 bg-gray-100 rounded-lg max-h-fit p-2">
-          {task.desc ? (task.desc.length > 50 ? task.desc.substr(0, 40) + '...' : task.desc) : "Some quick example text to build on the card title and make up the bul..."}
+        <p className="text-gray-700 text-sm bg-gray-100 rounded-lg max-h-fit p-2">
+          {task.desc ? task.desc : "Some quick example text to build on the card title and make up the bul..."}
         </p>
       </div>
     </div>
   )
 }
 
-function CardIcon({ name, clickhandler = null, tooltip = "tooltip", styles=null }) {
+function CardIcon({ name, clickhandler = null, tooltip = "tooltip", styles = null }) {
   return (
     <button
       type="button" className={"group relative inline-block rounded-lg p-1 text-slate-600 text-xl  " + styles}
