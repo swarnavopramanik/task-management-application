@@ -19,11 +19,6 @@ export default function Tasks() {
   }); //formstate states -{ new,edit,close} and contains inital values of form
   const [taskList, setTaskList] = useState(() => (localStorage.tasklist ? JSON.parse(localStorage.tasklist) : []));
 
-  // to track data when the sate changes.
-  // useEffect(() => {
-  //   console.log("states changed: ", formstate, taskList);
-  // }, [formstate, taskList]);
-
 
   function isImgUrl(url) {
     const img = new Image();
@@ -98,16 +93,27 @@ export default function Tasks() {
 
   return (
     <>
-      <div className="flex justify-between items-center px-2 bg-slate-300 rounded-t-lg">
-        <h2 className=" p-2 text-lg  font-medium text-black">Tasks</h2>
+      <div className="flex justify-between items-center px-2 bg-slate-800 border-b border-slate-500">
+        <h2 className=" p-2 text-xl font-mono text-black">Tasks</h2>
+        <div className="flex">
+          {/* avatar for profile. */}
+        </div>
+      </div>
+
+      <div className="flex justify-between items-center p-1 bg-slate-300 rounded-t-lg">
+        <div className='flex'>
+        <button className=" px-2  font-mono text-slate-800">table</button>
+        <button className=" px-2  font-mono text-slate-800">card</button>
+        </div>
         <div className="flex">
           <TaskSearch changehandler={handleTaskSearch} />
           <button className=" ml-2 bg-slate-500 inline-flex items-center px-2 py-1 rounded hover:bg-slate-600 hover:duration-500 hover:text-white" onClick={() => (setformstate({ ...formstate, state: "new" }))} > <HiPlus /> <span className="mx-1 text-sm">Add</span></button>
         </div>
       </div>
+
       <hr className='border border-gray-100' />
       {/* tasks container */}
-      <div className='h-[calc(100vh-130px)] overflow-y-auto overflow-x-hidden '>
+      <div className='h-5/6 overflow-y-auto overflow-x-hidden '>
         {formstate.state === "new" ?
           (<div className="flex w-full overflow-x-hidden md:w-4/6 mx-auto">
             <CreateTaskForm
