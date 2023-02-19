@@ -8,8 +8,10 @@ export default function DashboardLayout() {
         <div>
             <div className="flex flex-col md:flex-row bg-slate-100 h-screen overflow-hidden ">
                 <DashboardNav />
-                <div className=" h-screen bg-slate-200  rounded-t-lg w-full ">
+                <div className="h-screen w-full p-1">
+                    <div className="w-full bg-green-100 h-full rounded-b-lg">
                     <Outlet />
+                    </div>
                 </div>
             </div>
         </div>
