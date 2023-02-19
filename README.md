@@ -34,6 +34,3 @@ Css part more advanced javascript part you can add merged whatever you want .
 Contributions are welcome! <3
 
 Made with ❤️ and JavaScript.
-
-
-
