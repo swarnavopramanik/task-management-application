@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { useFormik } from 'formik'
 import * as yup from 'yup';
-
-import { HiTrash, HiPencil, HiPlus, HiSearch, HiCheck } from "react-icons/hi"
+import {
+  Link,
+  NavLink,
+  Outlet,
+  useOutletContext,
+} from 'react-router-dom'
+import { HiTrash, HiPencil, HiPlus, HiSearch, HiCheck, HiMenu } from "react-icons/hi"
+import clsx from 'clsx';
 
 
 // the Tasks component - contains the form and the tasks
 export default function Tasks() {
+
   const [formstate, setformstate] = useState({
     state: 'close',
     value: {
@@ -18,7 +25,7 @@ export default function Tasks() {
     }
   }); //formstate states -{ new,edit,close} and contains inital values of form
   const [taskList, setTaskList] = useState(() => (localStorage.tasklist ? JSON.parse(localStorage.tasklist) : []));
-
+  const [Nav, setNav] = useOutletContext();
 
   function isImgUrl(url) {
     const img = new Image();
@@ -93,30 +100,53 @@ export default function Tasks() {
 
   return (
     <>
+
+      {/* menubar for tasks searchbar hides and moves to the sidebar before md breakpoint */}
       <div className="flex justify-between items-center px-2 bg-slate-800 border-b border-slate-500 rounded-t-lg ">
-        <h2 className="py-2 text-xl font-mono text-white">Tasks</h2>
+        <div className="inline-flex items-center space-x-1">
+          <button className='block lg:hidden text-xl hover:bg-slate-700 p-1.5 rounded-lg'
+            onClick={() => setNav(!Nav)}>
+            <HiMenu />
+          </button>
+          <h2 className="py-2 text-xl font-mono text-white">Tasks</h2>
+        </div>
+        <div className="hidden md:block w-96 ">
+          <SearchBar onChange={(e) => handleTaskSearch(e.target.value)} />
+        </div>
+        <div>
+          <Avatar onClick={() => console.log('avatar clicked')} />
+        </div>
       </div>
+
 
       <div className="flex justify-between items-center bg-gray-300 px-2 py-1">
         <div className='flex'>
-          <button className=" mr-1 bg-slate-500 inline-flex items-center px-2 py-1 rounded hover:bg-slate-600 hover:duration-500 hover:text-white" onClick={() => (setformstate({ ...formstate, state: "new" }))} >
+          <MenuBtn
+            className={'text-sm inline-flex items-center'}
+            onClick={() => (setformstate({ ...formstate, state: "new" }))}
+          >
             <HiPlus />
             <span className="mx-1 text-sm">Add</span>
-          </button>
-          <button className="mr-1 bg-slate-500 px-2 py-1 rounded hover:bg-slate-600 hover:duration-500 hover:text-white">table</button>
-          <button className="mr-1 bg-slate-500 px-2 py-1 rounded hover:bg-slate-600 hover:duration-500 hover:text-white">card</button>
-        </div>
-        <div className="flex">
-          <TaskSearch changehandler={handleTaskSearch} />
-
+          </MenuBtn>
+          <MenuBtn className={'text-sm'}
+            link="/tasks/calender"
+          >
+            calender
+          </MenuBtn>
+          <MenuBtn className={'text-sm'}>
+            card
+          </MenuBtn>
         </div>
       </div>
 
       <hr className='border border-gray-100' />
+
       {/* tasks container */}
-      <div className='h-5/6 overflow-y-auto overflow-x-hidden '>
+      <div className='h-[calc(100vh-96px)] overflow-auto'>
+        <Outlet />
+
         {formstate.state === "new" ?
-          (<div className="flex w-full overflow-x-hidden md:w-4/6 mx-auto">
+          (<div className="flex w-full overflow-x-hidden md:w-1/2 mx-auto">
             <CreateTaskForm
               formState={formstate}
               changeformState={setformstate}
@@ -137,8 +167,7 @@ export default function Tasks() {
               closeForm={closeForm} />
           </div>) : null}
 
-
-        <div className=" flex flex-col items-center sm:grid sm:grid-cols-2 lg:grid-cols-4 lg:items-start gap-x-2 gap-y-4 p-2 ">
+        <div className="lg:columns-5 md:columns-4 sm:columns-3 p-2 space-y-3">
           {/* tasks goes here */}
           {taskList.map(task => (<TaskCard
             key={task.taskId}
@@ -150,24 +179,49 @@ export default function Tasks() {
             deleteTask={deleteTask}
             editTask={editTask} />))}
         </div>
+
       </div>
     </>
   )
 }
 
 
+function Avatar({ className, ...handlers }) {
+  return (
+    <img
+      // img to be chaged later.
+      src="https://mdbcdn.b-cdn.net/img/new/avatars/1.webp"
+      className={clsx("w-8 rounded-full shadow-lg", className)}
+      alt="Avatar"
+      {...handlers}
+    />
+  )
+}
+
+function MenuBtn({ children, className, link, ...props }) {
+  return (
+    <NavLink
+      to={link}
+      className={clsx("mr-1 bg-slate-500 px-2 py-1 rounded hover:bg-slate-600 hover:duration-500 hover:text-white", className)}
+      {...props}>
+      {children}
+    </NavLink>
+  )
+}
+
+
 // Tasks Search
-function TaskSearch({ changehandler }) {
+function SearchBar({ className, ...props }) {
   return (
     <div className="flex">
-      <div className="flex items-center bg-white rounded  focus:text-gray-700  border border-white focus-within:border-slate-600 pointer-events-none  ">
+      <div className={clsx("w-full flex items-center bg-white rounded  focus:text-gray-700  border border-white focus-within:border-slate-600 pointer-events-none", className)}>
         <HiSearch className=' text-lg text-slate-500  mx-2' />
         <input
           type="text"
-          className=" text-gray-700 py-1 mr-2 text-sm bg-white outline-none pointer-events-auto "
+          className="w-full text-gray-700 py-1 mr-2 text-sm bg-white outline-none pointer-events-auto "
           id="exampleFormControlInput1"
           placeholder="Search task here"
-          onChange={(e) => changehandler(e.target.value)}
+          {...props}
         ></input>
       </div>
     </div>
@@ -178,24 +232,22 @@ function TaskSearch({ changehandler }) {
 // task card 
 export function TaskCard(task) {
   return (
-    <div className="rounded-lg shadow-lg bg-white max-w-xs  ">
+    <div className="rounded-lg shadow-sm bg-white max-w-xs aspect-auto break-inside-avoid-column mx-auto">
       <div className='rounded-t-lg h-28 bg-slate-300 relative '>
         <div className="inline-flex rounded-lg absolute m-1.5 p-0.5 right-0 top-0 bg-slate-200" role="group">
           <CardIcon name={<HiCheck />} tooltip="mark completed" styles="hover:bg-green-400" />
           <CardIcon name={<HiPencil />} clickhandler={() => task.editTask(task.taskId)} tooltip="edit task" styles="hover:bg-blue-400" />
           <CardIcon name={<HiTrash />} clickhandler={() => task.deleteTask(task.taskId)} tooltip="delete task" styles="hover:bg-red-400" />
         </div>
-        <img className=" rounded-t-lg h-28 w-96" src={task.imgurl} alt="task image" />
+        <img className=" rounded-t-lg h-28 w-80" src={task.imgurl} alt="task image" />
       </div>
-      <div className="p-2" >
+      <div className="p-1 overflow-hidden" >
         <h5 className="text-gray-900 text-xl font-sans px-2">{task.title ? task.title : "Card title"}</h5>
-
-        <div className="flex my-1 ">
+        <div className="flex my-1 mr-1 ">
           <p className=' inline text-slate-500  bg-slate-200 px-3 rounded-lg '>{task.type ? task.type : "type"}</p>
         </div>
-
-        <p className="text-gray-700 text-sm bg-gray-100 rounded-lg max-h-fit p-2">
-          {task.desc ? task.desc : "Some quick example text to build on the card title and make up the bul..."}
+        <p className="text-gray-700 bg-gray-100 rounded-lg p-1 text-sm text-left break-all whitespace-pre-wrap">
+          {task.desc ? task.desc : "..."}
         </p>
       </div>
     </div>
@@ -208,12 +260,14 @@ function CardIcon({ name, clickhandler = null, tooltip = "tooltip", styles = nul
       type="button" className={"group relative inline-block rounded-lg p-1 text-slate-600 text-xl  " + styles}
       onClick={clickhandler} >
       {name}
-      <div className={"opacity-0 bg-slate-100 text-slate-800 text-sm rounded-lg absolute z-10 group-hover:opacity-100 px-2 py-1 mt-2 "}>
+      <div className={"hidden bg-slate-100 text-slate-800 text-xs rounded-lg absolute z-[1] px-2 py-1 mt-2 group-hover:inline-block"}>
         {tooltip}
       </div>
     </button>
   )
 }
+
+
 
 // Create task form
 export function CreateTaskForm({ formState, changeformState, submitHandler, title, submitbtn, closeForm }) {
