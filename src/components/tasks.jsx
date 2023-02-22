@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useFormik } from 'formik'
 import * as yup from 'yup';
 import {
-  Link,
-  NavLink,
-  Outlet,
-  useOutletContext,
+    useOutletContext,
 } from 'react-router-dom'
-import { HiTrash, HiPencil, HiPlus, HiSearch, HiCheck, HiMenu } from "react-icons/hi"
+import { HiTrash, HiPencil, HiPlus, HiCheck } from "react-icons/hi"
 import clsx from 'clsx';
+import MenuBar from './utilitycomponents/menubar';
+import SearchBar from './utilitycomponents/searchbar';
+import Btn from './utilitycomponents/button';
+import CalenderTwo from './calender/calender';
+import { TabDiv } from './utilitycomponents/tabs';
 
 
 // the Tasks component - contains the form and the tasks
@@ -25,6 +27,8 @@ export default function Tasks() {
     }
   }); //formstate states -{ new,edit,close} and contains inital values of form
   const [taskList, setTaskList] = useState(() => (localStorage.tasklist ? JSON.parse(localStorage.tasklist) : []));
+  // TaskView has 3 states - card,table,calender, with default value card.
+  const [TaskView, setTaskView] = useState('card');
   const [Nav, setNav] = useOutletContext();
 
   function isImgUrl(url) {
@@ -49,8 +53,6 @@ export default function Tasks() {
     newList.push({ taskId, ...values })
     setTaskList(newList);
     updateLocalStorage(newList);
-    // console.log("new tasklist", taskList);
-    // console.log("localStorage: ", JSON.parse(localStorage.tasklist))
   }
 
   function updateLocalStorage(list) {
@@ -61,8 +63,6 @@ export default function Tasks() {
     let newList = taskList.filter(task => (String(task.taskId) !== taskId));
     setTaskList(newList);
     updateLocalStorage(newList);
-    // console.log("new tasklist", taskList);
-    // console.log("localStorage: ", JSON.parse(localStorage.tasklist))
   }
 
   // both editTask and handleEditTask used for edit task.
@@ -92,6 +92,7 @@ export default function Tasks() {
     });
   }
 
+  // function for handling task search.
   function handleTaskSearch(keyword) {
     let originalList = JSON.parse(localStorage.getItem('tasklist'));
     let found = originalList.filter(task => (task.titleInput.includes(keyword) ? task : null))
@@ -102,132 +103,97 @@ export default function Tasks() {
     <>
 
       {/* menubar for tasks searchbar hides and moves to the sidebar before md breakpoint */}
-      <div className="flex justify-between items-center px-2 bg-slate-800 border-b border-slate-500 rounded-t-lg ">
-        <div className="inline-flex items-center space-x-1">
-          <button className='block lg:hidden text-xl hover:bg-slate-700 p-1.5 rounded-lg'
-            onClick={() => setNav(!Nav)}>
-            <HiMenu />
-          </button>
-          <h2 className="py-2 text-xl font-mono text-white">Tasks</h2>
-        </div>
-        <div className="hidden md:block w-96 ">
-          <SearchBar onChange={(e) => handleTaskSearch(e.target.value)} />
-        </div>
-        <div>
-          <Avatar onClick={() => console.log('avatar clicked')} />
-        </div>
+      <MenuBar pageName={'Tasks'} onClick={() => setNav(!Nav)} />
+
+
+      <div className="flex justify-center items-center bg-gray-300 px-2 py-1">
+        <Btn type={'button'}
+          className={'text-sm inline-flex items-center px-2 py-1 mx-0.5'}
+          onClick={() => (setformstate({ ...formstate, state: "new" }))} >
+          <HiPlus />
+          <span className="mx-0.5 text-sm ">Add</span>
+        </Btn>
+        <Btn className={clsx(TaskView==='calender'&&'bg-slate-800','text-sm px-2 py-1 mx-0.5')}
+          onClick={()=>setTaskView('calender')} >
+          calender
+        </Btn>
+        <Btn className={clsx(TaskView==='card'&&'bg-slate-800','text-sm px-2 py-1 mx-0.5')}
+        onClick={()=>setTaskView('card')}>
+          card
+        </Btn>
+        <Btn className={clsx(TaskView==='table'&&'bg-slate-800','text-sm px-2 py-1 mx-0.5')}
+        onClick={()=>setTaskView('table')}>
+          table
+        </Btn>
       </div>
 
 
-      <div className="flex justify-between items-center bg-gray-300 px-2 py-1">
-        <div className='flex'>
-          <MenuBtn
-            className={'text-sm inline-flex items-center'}
-            onClick={() => (setformstate({ ...formstate, state: "new" }))}
-          >
-            <HiPlus />
-            <span className="mx-1 text-sm">Add</span>
-          </MenuBtn>
-          <MenuBtn className={'text-sm'}
-            link="/tasks/calender"
-          >
-            calender
-          </MenuBtn>
-          <MenuBtn className={'text-sm'}>
-            card
-          </MenuBtn>
-        </div>
-      </div>
-
-      <hr className='border border-gray-100' />
+      {/* <hr className='border border-gray-100' /> */}
 
       {/* tasks container */}
       <div className='h-[calc(100vh-96px)] overflow-auto'>
-        <Outlet />
 
-        {formstate.state === "new" ?
-          (<div className="flex w-full overflow-x-hidden md:w-1/2 mx-auto">
-            <CreateTaskForm
-              formState={formstate}
-              changeformState={setformstate}
-              submitHandler={handleTaskSubmit}
-              title="Create new task"
-              submitbtn="Create"
-              closeForm={closeForm} />
-          </div>) : null}
+        {/* forms */}
+        <TabDiv className={clsx(formstate.state==='close'?'hidden':null)}>
+          {/* new task form. */}
+          {formstate.state === "new" ?
+            (<div className="flex w-full overflow-x-hidden md:w-1/2 mx-auto">
+              <CreateTaskForm
+                formState={formstate}
+                changeformState={setformstate}
+                submitHandler={handleTaskSubmit}
+                title="Create new task"
+                submitbtn="Create"
+                closeForm={closeForm} />
+            </div>) : null}
+          {/* edit task form */}
+          {formstate.state === "edit" ?
+            (<div className="flex w-full overflow-x-hidden md:w-4/6 mx-auto">
+              <CreateTaskForm
+                formState={formstate}
+                changeformState={setformstate}
+                submitHandler={handleEditTask}
+                title="Enter new values"
+                submitbtn="Save"
+                closeForm={closeForm} />
+            </div>) : null}
+        </TabDiv>
 
-        {formstate.state === "edit" ?
-          (<div className="flex w-full overflow-x-hidden md:w-4/6 mx-auto">
-            <CreateTaskForm
-              formState={formstate}
-              changeformState={setformstate}
-              submitHandler={handleEditTask}
-              title="Enter new values"
-              submitbtn="Save"
-              closeForm={closeForm} />
-          </div>) : null}
+        {/* calender view */}
+        <TabDiv className={clsx(TaskView !== 'calender' ? "hidden" : null)}>
+          <CalenderTwo />
+        </TabDiv>
 
-        <div className="lg:columns-5 md:columns-4 sm:columns-3 p-2 space-y-3">
-          {/* tasks goes here */}
-          {taskList.map(task => (<TaskCard
-            key={task.taskId}
-            taskId={task.taskId}
-            imgurl={task.urlInput}
-            title={task.titleInput}
-            type={task.typeInput}
-            desc={task.descInput}
-            deleteTask={deleteTask}
-            editTask={editTask} />))}
-        </div>
+
+        {/* card view */}
+        <TabDiv className={clsx(TaskView !== 'card' ? "hidden" : null)}>
+          {/* search bar for before md breakpoint */}
+          <div className="m-2 block md:hidden ">
+            <SearchBar onChange={(e) => handleTaskSearch(e.target.value)} />
+          </div>
+          <div className="lg:columns-5 md:columns-4 sm:columns-3 p-2 space-y-3">
+            {/* tasks goes here */}
+            {taskList.map(task => (<TaskCard
+              key={task.taskId}
+              taskId={task.taskId}
+              imgurl={task.urlInput}
+              title={task.titleInput}
+              type={task.typeInput}
+              desc={task.descInput}
+              deleteTask={deleteTask}
+              editTask={editTask} />))}
+          </div>
+        </TabDiv>
+
+        {/* table view */}
+        <TabDiv className={clsx(TaskView !=='table'?'hidden':null)} >
+          <p className="text-slate-400 text-center font-sans font-semibold text-lg">feature not ready yet.</p>
+        </TabDiv>
 
       </div>
     </>
   )
 }
-
-
-function Avatar({ className, ...handlers }) {
-  return (
-    <img
-      // img to be chaged later.
-      src="https://mdbcdn.b-cdn.net/img/new/avatars/1.webp"
-      className={clsx("w-8 rounded-full shadow-lg", className)}
-      alt="Avatar"
-      {...handlers}
-    />
-  )
-}
-
-function MenuBtn({ children, className, link, ...props }) {
-  return (
-    <NavLink
-      to={link}
-      className={clsx("mr-1 bg-slate-500 px-2 py-1 rounded hover:bg-slate-600 hover:duration-500 hover:text-white", className)}
-      {...props}>
-      {children}
-    </NavLink>
-  )
-}
-
-
-// Tasks Search
-function SearchBar({ className, ...props }) {
-  return (
-    <div className="flex">
-      <div className={clsx("w-full flex items-center bg-white rounded  focus:text-gray-700  border border-white focus-within:border-slate-600 pointer-events-none", className)}>
-        <HiSearch className=' text-lg text-slate-500  mx-2' />
-        <input
-          type="text"
-          className="w-full text-gray-700 py-1 mr-2 text-sm bg-white outline-none pointer-events-auto "
-          id="exampleFormControlInput1"
-          placeholder="Search task here"
-          {...props}
-        ></input>
-      </div>
-    </div>
-  )
-}
-
 
 // task card 
 export function TaskCard(task) {
@@ -385,21 +351,12 @@ export function CreateTaskForm({ formState, changeformState, submitHandler, titl
             ></textarea>
           </label>
         </div>
+
         <div className="flex justify-between">
-          <FormBtn name={submitbtn} type="submit" />
-          <FormBtn name={"Close"} clickhandler={() => closeForm()} />
+          <Btn type="submit" className={"px-3 py-2"} >{submitbtn}</Btn>
+          <Btn type="button" className={"px-3 py-2"} onClick={() => closeForm()}>Close</Btn>
         </div>
       </form>
     </div>
   )
 }
-
-function FormBtn({ name, type = "button", clickhandler }) {
-  return (
-    <button type={type} className={"px-6 py-2 bg-slate-500 text-white font-mediumpadding text-sm rounded shadow-md hover:bg-slate-600 hover:shadow-lg focus:bg-slate-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-slate-600 active:shadow-lg first-letter"}
-      onClick={clickhandler}>
-      {name} </button>
-  )
-}
-
-

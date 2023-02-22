@@ -19,11 +19,7 @@ const router = createBrowserRouter(
       <Route element={<DashboardLayout />}>
         <Route path='dashboard' element={<DashboardHome />} />
         <Route path='tasks' element={<Tasks />} />
-        <Route element={<Tasks />}>
-          <Route path='tasks/calender' element={<CalenderTwo />} />          
-        </Route>
       </Route>
-      <Route path='calender' element={<CalenderTwo />} />
       <Route path="*" element={<NotFound />} />
     </>
   )
