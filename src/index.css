@@ -18,8 +18,21 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
+
 *,*::after,*::before{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+@layer components {
+  .Btn {
+    background-color: theme('colors.slate.500');
+    border-radius: theme('borderRadius.DEFAULT');
+    box-shadow: theme('boxShadow.md');
+    color: theme('colors.white');
+    font-size: theme('fontSize.sm');
+    font-style: theme('fontFamily.sans');
+  }
+  /* utility components defined classes so that they can be overritten. */
 }
