@@ -1,12 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useFormik } from 'formik'
 import * as yup from 'yup';
-
-import { HiTrash, HiPencil, HiPlus, HiSearch, HiCheck } from "react-icons/hi"
+import {
+    useOutletContext,
+} from 'react-router-dom'
+import { HiTrash, HiPencil, HiPlus, HiCheck } from "react-icons/hi"
+import clsx from 'clsx';
+import MenuBar from './utilitycomponents/menubar';
+import SearchBar from './utilitycomponents/searchbar';
+import Btn from './utilitycomponents/button';
+import CalenderTwo from './calender/calender';
+import { TabDiv } from './utilitycomponents/tabs';
 
 
 // the Tasks component - contains the form and the tasks
 export default function Tasks() {
+
   const [formstate, setformstate] = useState({
     state: 'close',
     value: {
@@ -18,7 +27,9 @@ export default function Tasks() {
     }
   }); //formstate states -{ new,edit,close} and contains inital values of form
   const [taskList, setTaskList] = useState(() => (localStorage.tasklist ? JSON.parse(localStorage.tasklist) : []));
-
+  // TaskView has 3 states - card,table,calender, with default value card.
+  const [TaskView, setTaskView] = useState('card');
+  const [Nav, setNav] = useOutletContext();
 
   function isImgUrl(url) {
     const img = new Image();
@@ -42,8 +53,6 @@ export default function Tasks() {
     newList.push({ taskId, ...values })
     setTaskList(newList);
     updateLocalStorage(newList);
-    // console.log("new tasklist", taskList);
-    // console.log("localStorage: ", JSON.parse(localStorage.tasklist))
   }
 
   function updateLocalStorage(list) {
@@ -54,8 +63,6 @@ export default function Tasks() {
     let newList = taskList.filter(task => (String(task.taskId) !== taskId));
     setTaskList(newList);
     updateLocalStorage(newList);
-    // console.log("new tasklist", taskList);
-    // console.log("localStorage: ", JSON.parse(localStorage.tasklist))
   }
 
   // both editTask and handleEditTask used for edit task.
@@ -85,6 +92,7 @@ export default function Tasks() {
     });
   }
 
+  // function for handling task search.
   function handleTaskSearch(keyword) {
     let originalList = JSON.parse(localStorage.getItem('tasklist'));
     let found = originalList.filter(task => (task.titleInput.includes(keyword) ? task : null))
@@ -93,109 +101,119 @@ export default function Tasks() {
 
   return (
     <>
-      <div className="flex justify-between items-center px-2 bg-slate-800 border-b border-slate-500 rounded-t-lg ">
-        <h2 className="py-2 text-xl font-mono text-white">Tasks</h2>
+
+      {/* menubar for tasks searchbar hides and moves to the sidebar before md breakpoint */}
+      <MenuBar pageName={'Tasks'} onClick={() => setNav(!Nav)} />
+
+
+      <div className="flex justify-center items-center bg-gray-300 px-2 py-1">
+        <Btn type={'button'}
+          className={'text-sm inline-flex items-center px-2 py-1 mx-0.5'}
+          onClick={() => (setformstate({ ...formstate, state: "new" }))} >
+          <HiPlus />
+          <span className="mx-0.5 text-sm ">Add</span>
+        </Btn>
+        <Btn className={clsx(TaskView==='calender'&&'bg-slate-800','text-sm px-2 py-1 mx-0.5')}
+          onClick={()=>setTaskView('calender')} >
+          calender
+        </Btn>
+        <Btn className={clsx(TaskView==='card'&&'bg-slate-800','text-sm px-2 py-1 mx-0.5')}
+        onClick={()=>setTaskView('card')}>
+          card
+        </Btn>
+        <Btn className={clsx(TaskView==='table'&&'bg-slate-800','text-sm px-2 py-1 mx-0.5')}
+        onClick={()=>setTaskView('table')}>
+          table
+        </Btn>
       </div>
 
-      <div className="flex justify-between items-center bg-gray-300 px-2 py-1">
-        <div className='flex'>
-          <button className=" mr-1 bg-slate-500 inline-flex items-center px-2 py-1 rounded hover:bg-slate-600 hover:duration-500 hover:text-white" onClick={() => (setformstate({ ...formstate, state: "new" }))} >
-            <HiPlus />
-            <span className="mx-1 text-sm">Add</span>
-          </button>
-          <button className="mr-1 bg-slate-500 px-2 py-1 rounded hover:bg-slate-600 hover:duration-500 hover:text-white">table</button>
-          <button className="mr-1 bg-slate-500 px-2 py-1 rounded hover:bg-slate-600 hover:duration-500 hover:text-white">card</button>
-        </div>
-        <div className="flex">
-          <TaskSearch changehandler={handleTaskSearch} />
 
-        </div>
-      </div>
+      {/* <hr className='border border-gray-100' /> */}
 
-      <hr className='border border-gray-100' />
       {/* tasks container */}
-      <div className='h-5/6 overflow-y-auto overflow-x-hidden '>
-        {formstate.state === "new" ?
-          (<div className="flex w-full overflow-x-hidden md:w-4/6 mx-auto">
-            <CreateTaskForm
-              formState={formstate}
-              changeformState={setformstate}
-              submitHandler={handleTaskSubmit}
-              title="Create new task"
-              submitbtn="Create"
-              closeForm={closeForm} />
-          </div>) : null}
+      <div className='h-[calc(100vh-96px)] overflow-auto'>
 
-        {formstate.state === "edit" ?
-          (<div className="flex w-full overflow-x-hidden md:w-4/6 mx-auto">
-            <CreateTaskForm
-              formState={formstate}
-              changeformState={setformstate}
-              submitHandler={handleEditTask}
-              title="Enter new values"
-              submitbtn="Save"
-              closeForm={closeForm} />
-          </div>) : null}
+        {/* forms */}
+        <TabDiv className={clsx(formstate.state==='close'?'hidden':null)}>
+          {/* new task form. */}
+          {formstate.state === "new" ?
+            (<div className="flex w-full overflow-x-hidden md:w-1/2 mx-auto">
+              <CreateTaskForm
+                formState={formstate}
+                changeformState={setformstate}
+                submitHandler={handleTaskSubmit}
+                title="Create new task"
+                submitbtn="Create"
+                closeForm={closeForm} />
+            </div>) : null}
+          {/* edit task form */}
+          {formstate.state === "edit" ?
+            (<div className="flex w-full overflow-x-hidden md:w-4/6 mx-auto">
+              <CreateTaskForm
+                formState={formstate}
+                changeformState={setformstate}
+                submitHandler={handleEditTask}
+                title="Enter new values"
+                submitbtn="Save"
+                closeForm={closeForm} />
+            </div>) : null}
+        </TabDiv>
+
+        {/* calender view */}
+        <TabDiv className={clsx(TaskView !== 'calender' ? "hidden" : null)}>
+          <CalenderTwo />
+        </TabDiv>
 
 
-        <div className=" flex flex-col items-center sm:grid sm:grid-cols-2 lg:grid-cols-4 lg:items-start gap-x-2 gap-y-4 p-2 ">
-          {/* tasks goes here */}
-          {taskList.map(task => (<TaskCard
-            key={task.taskId}
-            taskId={task.taskId}
-            imgurl={task.urlInput}
-            title={task.titleInput}
-            type={task.typeInput}
-            desc={task.descInput}
-            deleteTask={deleteTask}
-            editTask={editTask} />))}
-        </div>
+        {/* card view */}
+        <TabDiv className={clsx(TaskView !== 'card' ? "hidden" : null)}>
+          {/* search bar for before md breakpoint */}
+          <div className="m-2 block md:hidden ">
+            <SearchBar onChange={(e) => handleTaskSearch(e.target.value)} />
+          </div>
+          <div className="lg:columns-5 md:columns-4 sm:columns-3 p-2 space-y-3">
+            {/* tasks goes here */}
+            {taskList.map(task => (<TaskCard
+              key={task.taskId}
+              taskId={task.taskId}
+              imgurl={task.urlInput}
+              title={task.titleInput}
+              type={task.typeInput}
+              desc={task.descInput}
+              deleteTask={deleteTask}
+              editTask={editTask} />))}
+          </div>
+        </TabDiv>
+
+        {/* table view */}
+        <TabDiv className={clsx(TaskView !=='table'?'hidden':null)} >
+          <p className="text-slate-400 text-center font-sans font-semibold text-lg">feature not ready yet.</p>
+        </TabDiv>
+
       </div>
     </>
   )
 }
 
-
-// Tasks Search
-function TaskSearch({ changehandler }) {
-  return (
-    <div className="flex">
-      <div className="flex items-center bg-white rounded  focus:text-gray-700  border border-white focus-within:border-slate-600 pointer-events-none  ">
-        <HiSearch className=' text-lg text-slate-500  mx-2' />
-        <input
-          type="text"
-          className=" text-gray-700 py-1 mr-2 text-sm bg-white outline-none pointer-events-auto "
-          id="exampleFormControlInput1"
-          placeholder="Search task here"
-          onChange={(e) => changehandler(e.target.value)}
-        ></input>
-      </div>
-    </div>
-  )
-}
-
-
 // task card 
 export function TaskCard(task) {
   return (
-    <div className="rounded-lg shadow-lg bg-white max-w-xs  ">
+    <div className="rounded-lg shadow-sm bg-white max-w-xs aspect-auto break-inside-avoid-column mx-auto">
       <div className='rounded-t-lg h-28 bg-slate-300 relative '>
         <div className="inline-flex rounded-lg absolute m-1.5 p-0.5 right-0 top-0 bg-slate-200" role="group">
           <CardIcon name={<HiCheck />} tooltip="mark completed" styles="hover:bg-green-400" />
           <CardIcon name={<HiPencil />} clickhandler={() => task.editTask(task.taskId)} tooltip="edit task" styles="hover:bg-blue-400" />
           <CardIcon name={<HiTrash />} clickhandler={() => task.deleteTask(task.taskId)} tooltip="delete task" styles="hover:bg-red-400" />
         </div>
-        <img className=" rounded-t-lg h-28 w-96" src={task.imgurl} alt="task image" />
+        <img className=" rounded-t-lg h-28 w-80" src={task.imgurl} alt="task image" />
       </div>
-      <div className="p-2" >
+      <div className="p-1 overflow-hidden" >
         <h5 className="text-gray-900 text-xl font-sans px-2">{task.title ? task.title : "Card title"}</h5>
-
-        <div className="flex my-1 ">
+        <div className="flex my-1 mr-1 ">
           <p className=' inline text-slate-500  bg-slate-200 px-3 rounded-lg '>{task.type ? task.type : "type"}</p>
         </div>
-
-        <p className="text-gray-700 text-sm bg-gray-100 rounded-lg max-h-fit p-2">
-          {task.desc ? task.desc : "Some quick example text to build on the card title and make up the bul..."}
+        <p className="text-gray-700 bg-gray-100 rounded-lg p-1 text-sm text-left break-all whitespace-pre-wrap">
+          {task.desc ? task.desc : "..."}
         </p>
       </div>
     </div>
@@ -208,12 +226,14 @@ function CardIcon({ name, clickhandler = null, tooltip = "tooltip", styles = nul
       type="button" className={"group relative inline-block rounded-lg p-1 text-slate-600 text-xl  " + styles}
       onClick={clickhandler} >
       {name}
-      <div className={"opacity-0 bg-slate-100 text-slate-800 text-sm rounded-lg absolute z-10 group-hover:opacity-100 px-2 py-1 mt-2 "}>
+      <div className={"hidden bg-slate-100 text-slate-800 text-xs rounded-lg absolute z-[1] px-2 py-1 mt-2 group-hover:inline-block"}>
         {tooltip}
       </div>
     </button>
   )
 }
+
+
 
 // Create task form
 export function CreateTaskForm({ formState, changeformState, submitHandler, title, submitbtn, closeForm }) {
@@ -331,21 +351,12 @@ export function CreateTaskForm({ formState, changeformState, submitHandler, titl
             ></textarea>
           </label>
         </div>
+
         <div className="flex justify-between">
-          <FormBtn name={submitbtn} type="submit" />
-          <FormBtn name={"Close"} clickhandler={() => closeForm()} />
+          <Btn type="submit" className={"px-3 py-2"} >{submitbtn}</Btn>
+          <Btn type="button" className={"px-3 py-2"} onClick={() => closeForm()}>Close</Btn>
         </div>
       </form>
     </div>
   )
 }
-
-function FormBtn({ name, type = "button", clickhandler }) {
-  return (
-    <button type={type} className={"px-6 py-2 bg-slate-500 text-white font-mediumpadding text-sm rounded shadow-md hover:bg-slate-600 hover:shadow-lg focus:bg-slate-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-slate-600 active:shadow-lg first-letter"}
-      onClick={clickhandler}>
-      {name} </button>
-  )
-}
-
-
