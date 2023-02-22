@@ -9,7 +9,7 @@ import clsx from 'clsx';
 import MenuBar from './utilitycomponents/menubar';
 import SearchBar from './utilitycomponents/searchbar';
 import Btn from './utilitycomponents/button';
-import CalenderTwo from './calender/calender';
+import Calendar from './calendar/calendar';
 import { TabDiv } from './utilitycomponents/tabs';
 
 
@@ -27,7 +27,7 @@ export default function Tasks() {
     }
   }); //formstate states -{ new,edit,close} and contains inital values of form
   const [taskList, setTaskList] = useState(() => (localStorage.tasklist ? JSON.parse(localStorage.tasklist) : []));
-  // TaskView has 3 states - card,table,calender, with default value card.
+  // TaskView has 3 states - card,table,calendar, with default value card.
   const [TaskView, setTaskView] = useState('card');
   const [Nav, setNav] = useOutletContext();
 
@@ -113,9 +113,9 @@ export default function Tasks() {
           <HiPlus />
           <span className="mx-0.5 text-sm ">Add</span>
         </Btn>
-        <Btn className={clsx(TaskView==='calender'&&'bg-slate-800','text-sm px-2 py-1 mx-0.5')}
-          onClick={()=>setTaskView('calender')} >
-          calender
+        <Btn className={clsx(TaskView==='calendar'&&'bg-slate-800','text-sm px-2 py-1 mx-0.5')}
+          onClick={()=>setTaskView('calendar')} >
+          calendar
         </Btn>
         <Btn className={clsx(TaskView==='card'&&'bg-slate-800','text-sm px-2 py-1 mx-0.5')}
         onClick={()=>setTaskView('card')}>
@@ -156,9 +156,9 @@ export default function Tasks() {
             </div>) : null}
         </TabDiv>
 
-        {/* calender view */}
-        <TabDiv className={clsx(TaskView !== 'calender' ? "hidden" : null)}>
-          <CalenderTwo />
+        {/* calendar view */}
+        <TabDiv className={clsx(TaskView !== 'calendar' ? "hidden" : null)}>
+          <Calendar />
         </TabDiv>
 
 
@@ -271,18 +271,17 @@ export function CreateTaskForm({ formState, changeformState, submitHandler, titl
   });
   return (
     <div className="block p-6 rounded-lg  bg-transparent w-full">
-      <h2 className='text-black'>{title}</h2>
+      <h2 className=' font-sans text-xl text-slate-50 select-none'>{title}</h2>
       <hr className='border border-slate-500 my-2' />
-
       <form onSubmit={formik.handleSubmit} >
         {/* url input */}
         <div className="block my-1">
           <label htmlFor={"urlInput"}>
-            <p className='text-black text-sm mb-1 font-thin'>
+            <p className='text-slate-100 font-medium font- mb-1 font-sans'>
               {formik.touched.urlInput && formik.errors.urlInput ?
                 (<span className='text-sm text-red-400'>{formik.errors.urlInput}</span>) : 'Image Url'}
             </p>
-            <input type={"Url"} className=" block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-slate-800 focus:outline-none"
+            <input type={"Url"} className=" block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-slate-200  border border-dashed border-gray-300 rounded transition ease-in-out  focus:text-gray-700 focus:bg-white focus:border-slate-800 focus:outline-none"
               id='urlInput'
               name='urlInput'
               placeholder={"Name..."}
@@ -296,11 +295,11 @@ export function CreateTaskForm({ formState, changeformState, submitHandler, titl
         {/* title input */}
         <div className="block my-1">
           <label htmlFor={"titleInput"}>
-            <p className='text-black text-sm mb-1 font-thin'>
+            <p className='text-slate-100 font-medium font- mb-1 font-sans'>
               {formik.touched.titleInput && formik.errors.titleInput ?
                 (<span className='text-sm text-red-400'>{formik.errors.titleInput}</span>) : 'task Title'}
             </p>
-            <input type="text" className=" block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-slate-800 focus:outline-none"
+            <input type="text" className=" block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-slate-200  border border-dashed border-gray-300 rounded transition ease-in-out  focus:text-gray-700 focus:bg-white focus:border-slate-800 focus:outline-none"
               id="titleInput"
               name='titleInput'
               placeholder="Learn web dev, read book..."
@@ -314,11 +313,11 @@ export function CreateTaskForm({ formState, changeformState, submitHandler, titl
         {/* type input */}
         <div className="block my-1">
           <label htmlFor="typeInput">
-            <p className='text-black text-sm mb-1 font-thin'>
+            <p className='text-slate-100 font-medium font- mb-1 font-sans'>
               {formik.touched.typeInput && formik.errors.typeInput ?
                 (<span className='text-sm text-red-400'>{formik.errors.typeInput}</span>) : 'task type'}
             </p>
-            <input type={"text"} className=" block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-slate-800 focus:outline-none"
+            <input type={"text"} className=" block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-slate-200  border border-dashed border-gray-300 rounded transition ease-in-out  focus:text-gray-700 focus:bg-white focus:border-slate-800 focus:outline-none"
               id='typeInput'
               name='typeInput'
               placeholder="Work ..."
@@ -332,12 +331,12 @@ export function CreateTaskForm({ formState, changeformState, submitHandler, titl
         {/* description */}
         <div className=" mb-2 my-1">
           <label htmlFor="descInput" >
-            <p className='text-black text-sm mb-1 font-thin'>
+            <p className='text-slate-100 font-medium font- mb-1 font-sans'>
               {formik.touched.descInput && formik.errors.descInput ?
                 (<span className='text-sm text-red-400'>{formik.errors.descInput}</span>) : 'description'}
             </p>
             <textarea
-              className="max-h-40 block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-slate-800 focus:outline-none "
+              className=" max-h-40 block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-slate-200  border border-dashed border-gray-300 rounded transition ease-in-out  focus:text-gray-700 focus:bg-white focus:border-slate-800 focus:outline-none"
               id="descInput"
               name='descInput'
               rows="3"
@@ -350,8 +349,8 @@ export function CreateTaskForm({ formState, changeformState, submitHandler, titl
         </div>
 
         <div className="flex justify-between">
-          <Btn type="submit" className={"px-3 py-2"} >{submitbtn}</Btn>
-          <Btn type="button" className={"px-3 py-2"} onClick={() => closeForm()}>Close</Btn>
+          <Btn type="submit" className={"px-3 py-2 hover:bg-slate-700 rounded-md"} >{submitbtn}</Btn>
+          <Btn type="button" className={"px-3 py-2 hover:bg-slate-700 rounded-md"} onClick={() => closeForm()}>Close</Btn>
         </div>
       </form>
     </div>

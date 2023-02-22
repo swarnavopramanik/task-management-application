@@ -4,8 +4,6 @@ import {
   Route,
   createRoutesFromElements,
 } from "react-router-dom"
-import Calender from "./components/calender/calender"
-import CalenderTwo from "./components/calender/calender"
 import Tasks from "./components/tasks"
 import DashboardHome from "./pages/dashboardhome"
 import DashboardLayout from './pages/dashboardlayout'

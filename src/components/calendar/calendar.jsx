@@ -20,7 +20,7 @@ import {
 } from "react-icons/hi"
 
 
-export default function CalenderTwo() {
+export default function Calendar() {
     let today = startOfToday();
     let dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat'];
 
