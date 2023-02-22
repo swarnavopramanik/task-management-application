@@ -127,9 +127,6 @@ export default function Tasks() {
         </Btn>
       </div>
 
-
-      {/* <hr className='border border-gray-100' /> */}
-
       {/* tasks container */}
       <div className='h-[calc(100vh-96px)] overflow-auto'>
 
