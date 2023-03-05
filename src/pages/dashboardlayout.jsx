@@ -7,9 +7,9 @@ export default function DashboardLayout() {
     const [Nav, setNav] = useState(false);
     return (
         <div>
-            <div className="flex flex-row h-screen overflow-hidden bg-zinc-500 ">
+            <div className="flex flex-row h-screen overflow-hidden bg-zinc-500">
                 <DashboardNav Nav={Nav} setNav={setNav} />
-                <div className="h-screen w-full p-1">
+                <div className="h-screen w-full p-1 ">
                     <div className="w-full h-full rounded-lg bg-gray-800">
                         <Outlet context={[Nav, setNav]} />
                     </div>

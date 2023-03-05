@@ -6,7 +6,7 @@ export default function Avatar({ className, ...props }) {
         <img
             // img to be chaged later.
             src="https://mdbcdn.b-cdn.net/img/new/avatars/1.webp"
-            className={clsx("w-8 rounded-full shadow-lg", className)}
+            className={clsx("w-8 rounded-full shadow-lg cursor-pointer", className)}
             alt="Avatar"
             {...props}
         />
