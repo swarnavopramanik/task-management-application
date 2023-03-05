@@ -1,10 +1,12 @@
 import React from "react"
 import { HiMenu } from "react-icons/hi"
+import { useNavigate } from "react-router-dom"
 import Avatar from "./avatar"
 import SearchBar from "./searchbar"
 
 
 export default function MenuBar({pageName,...props}) {
+    const navigate = useNavigate();
     return (
         <div className="flex justify-between items-center px-2 bg-slate-800 border-b border-slate-500 rounded-t-lg ">
             <div className="inline-flex items-center space-x-1">
@@ -19,7 +21,9 @@ export default function MenuBar({pageName,...props}) {
                 <SearchBar />
             </div>
             <div>
-                <Avatar onClick={() => console.log('avatar clicked')} />
+                <Avatar onClick={() => {
+                    navigate('/profile');
+                }} />
             </div>
         </div>
     )
